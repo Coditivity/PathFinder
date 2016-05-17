@@ -102,19 +102,21 @@ public class Grid
 
             }
         }
-        Debug.Log("unwalkcount " + unwalkcount);
 
-        MeshFilter[] meshFilters = nodeObjectParent.GetComponentsInChildren<MeshFilter>();
-        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-        for(int i = 0; i < meshFilters.Length; i++)
+        if (drawGrid)
         {
-            combine[i].mesh = meshFilters[i].sharedMesh;
-            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            meshFilters[i].gameObject.SetActive(false);
+            MeshFilter[] meshFilters = nodeObjectParent.GetComponentsInChildren<MeshFilter>();
+            CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+            for (int i = 0; i < meshFilters.Length; i++)
+            {
+                combine[i].mesh = meshFilters[i].sharedMesh;
+                combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+                meshFilters[i].gameObject.SetActive(false);
+            }
+            nodeObjectParent.transform.GetComponent<MeshFilter>().mesh = new Mesh();
+            nodeObjectParent.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
+            nodeObjectParent.transform.gameObject.SetActive(true);
         }
-        nodeObjectParent.transform.GetComponent<MeshFilter>().mesh = new Mesh();
-        nodeObjectParent.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
-        nodeObjectParent.transform.gameObject.SetActive(true);
 
     }
 

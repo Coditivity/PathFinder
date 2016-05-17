@@ -7,7 +7,7 @@ public class GameScript : MonoBehaviour {
 
     public LayerMask unwalkableLayerMask;
     public Transform characterTransform;
-    public Animator characterAnimator;
+    public MovementHandler characterMovementHandler;
     List<Node> path;
     Grid grid;
     public GameObject nodePrefab;
@@ -17,7 +17,7 @@ public class GameScript : MonoBehaviour {
 	void Start () {
 
         path = new List<Node>();
-        grid = new Grid(Vector2.zero, 20, 20, 1f, unwalkableLayerMask, true, nodePrefab);
+        grid = new Grid(Vector2.zero, 20, 20, .5f, unwalkableLayerMask, false, nodePrefab);
         Debug.Log("start " + MyGameScripts.NormalizeAngleRad(-13.043828f));
 
 	}
@@ -43,13 +43,13 @@ public class GameScript : MonoBehaviour {
             
            
         }
-        if (path.Count > 0)
+      //  if (path.Count > 0)
         {
 
             //  MovementHandler.HandleMovement(characterTransform
             //     , PathFinder.instance.endNode.position, characterAnimator);
 
-            MovementHandler.RunThroughPath(path, characterTransform, characterAnimator);
+            characterMovementHandler.RunThroughPath(path);
            
             /*characterAnimator.SetFloat("ForwardSpeed", moveAmount, .1f, Time.deltaTime);
             characterAnimator.SetFloat("Turn"//, 0, .1f, Time.deltaTime)
