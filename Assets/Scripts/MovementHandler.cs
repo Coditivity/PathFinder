@@ -22,28 +22,39 @@ public class MovementHandler :MonoBehaviour{
     public void HandleMovement( Vector3 targetPosMove
         , Vector3 targetPosTu) //targetPosTurn
     {
+       
+        /*  Vector3 tVec = transform.position;
 
-        Vector3 tVec = transform.position;
+          Vector3 dir = targetPosMove - tVec;// transform.position;       
+          dir.Normalize();
+          dir = transform.InverseTransformDirection(dir);
+          dir = Vector3.ProjectOnPlane(dir, Vector3.up);
+          float angle = Mathf.Atan2(dir.x, dir.z);
+          float rotateAmount =  MyGameScripts.rotateAngleToRad(0, angle, 10, Time.deltaTime);
+          if (Mathf.Abs( rotateAmount - angle) <= .00001f)
+          {            
+              bTurnedToNode1 = true;
+          }
 
-        Vector3 dir = targetPosMove - tVec;// transform.position;       
-        dir.Normalize();
-        dir = transform.InverseTransformDirection(dir);
-        dir = Vector3.ProjectOnPlane(dir, Vector3.up);
-        float angle = Mathf.Atan2(dir.x, dir.z);
-        float rotateAmount =  MyGameScripts.rotateAngleToRad(0, angle, 10, Time.deltaTime);
-        if (Mathf.Abs( rotateAmount - angle) <= .00001f)
-        {            
+              transform.Rotate(Vector3.up * rotateAmount*Mathf.Rad2Deg ); // angle/Time.deltaTime);*/
+        // Vector3 dirVec = (targetPosTurn - transform.position).normalized;
+
+        Vector3 tempVec = targetPosMove;
+        tempVec.y = transform.position.y; //get the targetmove position with the same y offset at the player
+        Vector3 turnDir = (tempVec - transform.position).normalized;
+        Quaternion rotationNeeded = Quaternion.LookRotation(turnDir);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotationNeeded, 200 * Time.deltaTime);
+        Debug.LogError("w>>" + Quaternion.LookRotation(turnDir));
+        if (Vector3.Dot(transform.forward, turnDir) >= .98f)
+        {
             bTurnedToNode1 = true;
         }
 
-            transform.Rotate(Vector3.up * rotateAmount*Mathf.Rad2Deg ); // angle/Time.deltaTime);
-       // Vector3 dirVec = (targetPosTurn - transform.position).normalized;
         if(bTurnedToNode1)
         {
             //transform.position += dirVec * 2 * Time.deltaTime;
-            
-            MyGameScripts.MoveVector(ref tVec, targetPosMove, 2.5f, Time.deltaTime);
-            tVec.y = transform.position.y;
+            Vector3 tVec = transform.position;
+            MyGameScripts.MoveVector(ref tVec, tempVec, 2.5f, Time.deltaTime);            
             transform.position = tVec;
             animator.SetFloat("ForwardSpeed", .8f, .1f, Time.deltaTime);
             animator.SetFloat("Turn", 0, .1f, Time.deltaTime);
@@ -52,14 +63,14 @@ public class MovementHandler :MonoBehaviour{
         else
         {
 
-            int sign = rotateAmount > Mathf.PI ? -1 : 1;
+           // int sign = rotateAmount > Mathf.PI ? -1 : 1;
             animator.SetFloat("ForwardSpeed", 0, .1f, Time.deltaTime);
-            animator.SetFloat("Turn", 1f * sign, .1f, Time.deltaTime);
+         //   animator.SetFloat("Turn", 1f * sign, .1f, Time.deltaTime);
         }
 
     //    Debug.LogError((Vector3.ProjectOnPlane(tVec, Vector3.up) - targetPosMove).magnitude + " tvec>>" + tVec + " targetposmove>>" + targetPosMove);
 
-        if ((Vector3.ProjectOnPlane( tVec, Vector3.up) - targetPosMove).magnitude == 0)
+        if ((tempVec - transform.position).magnitude == 0)
         {
             
             bTurnedToNode1 = false;
