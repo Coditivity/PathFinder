@@ -20,19 +20,19 @@ public class MovementHandler :MonoBehaviour{
    
 
     public void HandleMovement( Vector3 targetPosMove
-        , Vector3 targetPosTu)
+        , Vector3 targetPosTu) //targetPosTurn
     {
 
-        Vector3 tVec = new Vector3(transform.position.x, targetPosMove.y, transform.position.z);
-        
-        Vector3 dir = targetPosMove - transform.position;       
+        Vector3 tVec = transform.position;
+
+        Vector3 dir = targetPosMove - tVec;// transform.position;       
         dir.Normalize();
         dir = transform.InverseTransformDirection(dir);
         dir = Vector3.ProjectOnPlane(dir, Vector3.up);
         float angle = Mathf.Atan2(dir.x, dir.z);
-        float rotateAmount = MyGameScripts.rotateAngleToRad(0, angle, 5, Time.deltaTime);
-        if (Mathf.Abs(angle - rotateAmount) <= .00001f)
-        {
+        float rotateAmount =  MyGameScripts.rotateAngleToRad(0, angle, 10, Time.deltaTime);
+        if (Mathf.Abs( rotateAmount - angle) <= .00001f)
+        {            
             bTurnedToNode1 = true;
         }
 
@@ -56,8 +56,12 @@ public class MovementHandler :MonoBehaviour{
             animator.SetFloat("ForwardSpeed", 0, .1f, Time.deltaTime);
             animator.SetFloat("Turn", 1f * sign, .1f, Time.deltaTime);
         }
-        if ((tVec - targetPosMove).magnitude == 0)
+
+    //    Debug.LogError((Vector3.ProjectOnPlane(tVec, Vector3.up) - targetPosMove).magnitude + " tvec>>" + tVec + " targetposmove>>" + targetPosMove);
+
+        if ((Vector3.ProjectOnPlane( tVec, Vector3.up) - targetPosMove).magnitude == 0)
         {
+            
             bTurnedToNode1 = false;
             animator.SetFloat("ForwardSpeed", 0, .1f, Time.deltaTime);
             animator.SetFloat("Turn", 0, .1f, Time.deltaTime);

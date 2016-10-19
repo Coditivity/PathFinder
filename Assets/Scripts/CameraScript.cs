@@ -14,6 +14,11 @@ public class CameraScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        characterCamera.transform.position = transform.position + initialRelativeCamPos;
+        
 	}
+
+    void LateUpdate()
+    {
+        characterCamera.transform.position = transform.position + initialRelativeCamPos;
+    }
 }
