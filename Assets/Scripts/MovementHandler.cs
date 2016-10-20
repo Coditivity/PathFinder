@@ -45,7 +45,7 @@ public class MovementHandler :MonoBehaviour{
         Quaternion rotationNeeded = Quaternion.LookRotation(turnDir);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotationNeeded, 200 * Time.deltaTime);
         Debug.LogError("w>>" + Quaternion.LookRotation(turnDir));
-        if (Vector3.Dot(transform.forward, turnDir) >= .98f)
+        if (Vector3.Dot(transform.forward, turnDir) >= .7f)
         {
             bTurnedToNode1 = true;
         }
@@ -62,10 +62,20 @@ public class MovementHandler :MonoBehaviour{
         }
         else
         {
-
+            float rotAngle = Vector3.Angle(transform.forward, turnDir);
+            Vector3 crossVec = Vector3.Cross(transform.forward, turnDir);
+            int sign = crossVec.y<0?-1:1;
+            if(sign < 0)
+            {
+                Debug.LogError("clockwise");
+            }
+            else
+            {
+                Debug.LogError("counter");
+            }
            // int sign = rotateAmount > Mathf.PI ? -1 : 1;
             animator.SetFloat("ForwardSpeed", 0, .1f, Time.deltaTime);
-         //   animator.SetFloat("Turn", 1f * sign, .1f, Time.deltaTime);
+            animator.SetFloat("Turn", 1f * sign, .1f, Time.deltaTime);
         }
 
     //    Debug.LogError((Vector3.ProjectOnPlane(tVec, Vector3.up) - targetPosMove).magnitude + " tvec>>" + tVec + " targetposmove>>" + targetPosMove);
