@@ -17,9 +17,9 @@ public class GameScript : MonoBehaviour {
 	void Start () {
 
         path = new List<Node>();
-        grid = new Grid(Vector2.zero, 20, 20, .5f, unwalkableLayerMask, false, nodePrefab);
-        Debug.Log("start " + MyGameScripts.NormalizeAngleRad(-13.043828f));
-
+        grid = new Grid(Vector2.zero, 20, 20, .75f, unwalkableLayerMask, true, nodePrefab);
+        // Debug.Log("start " + MyGameScripts.NormalizeAngleRad(-13.043828f));
+        Debug.Log("dfdf" + null + ">>>>");
 	}
 
     Vector3 target;

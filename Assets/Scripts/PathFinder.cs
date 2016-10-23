@@ -36,11 +36,13 @@ public class PathFinder {
     
     public static void SetAndStart(Grid grid, Vector3 start, Vector3 target, List<Node> outPath)
     {
+
         instance.grid = grid;
         instance.startNode = instance.GetNodeFromWorldPostion(start);
         instance.endNode = instance.GetNodeFromWorldPostion(target);
         instance.path = outPath;
         instance.grid.ClosedNodes.Add(instance.startNode);
+        instance.bestNodeAvailableTillNow = null;
         instance.FindPath(instance.startNode);
 
     }
@@ -52,6 +54,7 @@ public class PathFinder {
         instance.endNode = instance.GetNodeFromWorldPostion(job.to);
         instance.path = job.intoPath;
         instance.grid.ClosedNodes.Add(instance.startNode);
+        instance.bestNodeAvailableTillNow = null;
         instance.FindPath(instance.startNode);
     }
 
@@ -134,18 +137,18 @@ public class PathFinder {
 
     
     
-    void FindPath(Node n)
+    bool FindPath(Node n)
     {
         if (n == endNode)
         {
-            TracePath();
-            return;
-
-            // yield return null;
+            TracePath(endNode);
+            return true;
+            
         }
+        
         if (!endNode.isWalkable)
         {
-            return;
+            return false;
         }
 
 
@@ -153,7 +156,7 @@ public class PathFinder {
         bool found = CalculateCost(n);
         if (!found)
         {
-            return;
+            return true;
         }
         /*   float lowestNetCost = float.MaxValue;
            float lowestHCost = float.MaxValue;
@@ -181,19 +184,29 @@ public class PathFinder {
 
            openNodes.Remove(bestNode);
            closedNodes.Add(bestNode);*/
-        Node node = grid.OpenNodes.Remove();
+        if (grid.OpenNodes.Count <= 0) //target node unreachable
+        {
+            // Debug.LogError("cost min>>" + grid.ClosedNodes.elements[grid.ClosedNodes.Count / 2].NetCost);
+            // Debug.LogError("cost >>" + grid.ClosedNodes.elements[grid.ClosedNodes.Count/2 + 1].NetCost);
+          //  Debug.LogError("finding for best yet " + bestNodeAvailableTillNow.hCost);
+            TracePath(bestNodeAvailableTillNow);
+           
+            return false;
+        }
+        Node node = grid.OpenNodes.Remove();        
         grid.ClosedNodes.Add(node);
         FindPath(node);
 
 
 
-
+        return true;
 
         // yield return null;
     }
 
 
 
+    private Node bestNodeAvailableTillNow = null;
 
     bool CalculateCost(Node node)
     {
@@ -202,6 +215,7 @@ public class PathFinder {
         {
             return false;
         }
+        
 
         Node[] adjNodes = getAdjacentNodes(node);
 
@@ -277,17 +291,41 @@ public class PathFinder {
                 }
 
 
-
+                if (bestNodeAvailableTillNow == null )
+                {
+                    bestNodeAvailableTillNow = n;
+                 
+                }
+                if (n.hCost <= bestNodeAvailableTillNow.hCost)
+                {
+                    if (n.hCost == bestNodeAvailableTillNow.hCost)
+                    {
+                        if (n.NetCost < bestNodeAvailableTillNow.NetCost)
+                        {
+                            bestNodeAvailableTillNow = n;
+                        }
+                    }
+                    else
+                    {
+                        bestNodeAvailableTillNow = n;
+                    }
+                }
 
             }
+            else
+            {
+             //   Debug.LogError("node null");
+            }
         }
+        
+      //  Debug.LogError("calcing costs");
         return true;
     }
 
-    void TracePath()
+    void TracePath(Node targetNode)
     {
 
-        Node currentNode = endNode;
+        Node currentNode = targetNode;
 
 
         float netCostSum = 0;

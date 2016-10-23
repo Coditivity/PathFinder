@@ -20,17 +20,27 @@ public class Heap<T> :IEnumerable where T : IHeap<T>
 
     public void Add(T element)
     {
+        
+        
         element.HeapIndex = Count;
         elements[Count] = element;
         SortUp(element);
-        Count++;
+        if (Count < elements.Length - 2)
+        {
+            Count++;
+        }
     }
 
     public T Remove()
     {
-
-        Count--;
+        if (Count != 0)
+        {
+            Count--;
+        }
         T retElement = elements[0];
+        if (Count < 0) { 
+           Debug.LogError("count>>" + Count);
+        }
         elements[0] = elements[Count];
         elements[0].HeapIndex = 0;
         SortDown(elements[0]);

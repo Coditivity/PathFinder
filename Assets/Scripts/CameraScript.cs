@@ -19,6 +19,6 @@ public class CameraScript : MonoBehaviour {
 
     void LateUpdate()
     {
-        characterCamera.transform.position = transform.position + initialRelativeCamPos;
+        //characterCamera.transform.position = transform.position + initialRelativeCamPos;
     }
 }
