@@ -11,6 +11,7 @@ public class GameScript : MonoBehaviour {
     List<Node> path;
     Grid grid;
     public GameObject nodePrefab;
+    private float colliderRadius = .1f;
 
     
 	// Use this for initialization
@@ -37,7 +38,7 @@ public class GameScript : MonoBehaviour {
             RaycastHit hit;
             Physics.Raycast(targetRay, out hit);
             path.Clear();
-            PathManager.AddForPathFinding(grid, characterTransform.position, hit.point, path, true);
+            PathManager.AddForPathFinding(grid, characterTransform.position, hit.point, path, true, colliderRadius);
             PathManager.StartPathFinding();
             //characterTransform.position += path[path.Count - 1].position.normalized;
             
@@ -49,7 +50,7 @@ public class GameScript : MonoBehaviour {
             //  MovementHandler.HandleMovement(characterTransform
             //     , PathFinder.instance.endNode.position, characterAnimator);
 
-            characterMovementHandler.RunThroughPath(path);
+            characterMovementHandler.RunThroughPath(path, colliderRadius);
            
             /*characterAnimator.SetFloat("ForwardSpeed", moveAmount, .1f, Time.deltaTime);
             characterAnimator.SetFloat("Turn"//, 0, .1f, Time.deltaTime)

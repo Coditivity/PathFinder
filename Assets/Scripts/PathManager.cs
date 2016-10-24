@@ -31,10 +31,11 @@ public class PathManager:MonoBehaviour {
         }
     }
 
-	public static void AddForPathFinding(Grid grid, Vector3 from, Vector3 to, List<Node> outPath, bool drawGrid)
+	public static void AddForPathFinding(Grid grid, Vector3 from, Vector3 to, List<Node> outPath, bool drawGrid
+        , float colliderRadius)
     {
         grid.Reset();
-        instance.jobQueue.Enqueue(new PathFindJob(grid, from, to, outPath, drawGrid));
+        instance.jobQueue.Enqueue(new PathFindJob(grid, from, to, outPath, drawGrid, colliderRadius));
     }
 
     public static void StartPathFinding()

@@ -11,7 +11,6 @@ public class MovementHandler : MonoBehaviour
 
     Animator animator;
     bool bTurnedToNode1;
-    float colliderRadius = .1f;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -29,7 +28,7 @@ public class MovementHandler : MonoBehaviour
         Vector3 turnDir = (tempVec - transform.position).normalized;
         Quaternion rotationNeeded = Quaternion.LookRotation(turnDir);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, rotationNeeded, 500 * Time.deltaTime);
-        if (Vector3.Dot(transform.forward, turnDir) > .5f)
+        if (Vector3.Dot(transform.forward, turnDir) > .6f)
         {
             bTurnedToNode1 = true;
         }
@@ -68,7 +67,7 @@ public class MovementHandler : MonoBehaviour
         }
     }
 
-    public void RunThroughPath(List<Node> path)
+    public void RunThroughPath(List<Node> path, float colliderRadius)
     {
 
 
@@ -80,7 +79,7 @@ public class MovementHandler : MonoBehaviour
         Vector3 rayDir = (path[0].position - transform.position).normalized;
         RaycastHit hitInfo;
         float rayDistance = (path[0].position - transform.position).magnitude;
-        if (!Physics.SphereCast(transform.position, colliderRadius, rayDir, out hitInfo)) //if there are no obstacles in the straight path from character pos to destination
+        if (!Physics.SphereCast(transform.position, colliderRadius, rayDir, out hitInfo, rayDistance)) //if there are no obstacles in the straight path from character pos to destination
         {
           //  Debug.LogError("no collision");
             Vector3 movePos = path[0].position;

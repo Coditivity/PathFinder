@@ -9,13 +9,18 @@ public struct PathFindJob
     public Vector3 to;
     public List<Node> intoPath;
     public bool drawGrid;
-    public PathFindJob(Grid grid, Vector3 from, Vector3 to, List<Node> intoPath, bool drawGrid)
+    public Node endNode;
+    public float colliderRadius;
+    public PathFindJob(Grid grid, Vector3 from, Vector3 to, List<Node> intoPath, bool drawGrid, float colliderRadius)
     {
         this.drawGrid = drawGrid;
         this.grid = grid;
         this.from = from;
         this.to = to;
         this.intoPath = intoPath;
+        this.colliderRadius = colliderRadius;
+        this.endNode = null;
+        
 
     }
 }

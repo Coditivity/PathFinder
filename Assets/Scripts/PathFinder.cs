@@ -33,8 +33,10 @@ public class PathFinder {
             pathFinder = new PathFinder();
         }
     }
+
+    private float colliderRadius = -1;
     
-    public static void SetAndStart(Grid grid, Vector3 start, Vector3 target, List<Node> outPath)
+    public static void SetAndStart(Grid grid, Vector3 start, Vector3 target, List<Node> outPath, float colliderRadius)
     {
 
         instance.grid = grid;
@@ -44,6 +46,7 @@ public class PathFinder {
         instance.grid.ClosedNodes.Add(instance.startNode);
         instance.bestNodeAvailableTillNow = null;
         instance.FindPath(instance.startNode);
+        instance.colliderRadius = colliderRadius;
 
     }
 
@@ -56,6 +59,7 @@ public class PathFinder {
         instance.grid.ClosedNodes.Add(instance.startNode);
         instance.bestNodeAvailableTillNow = null;
         instance.FindPath(instance.startNode);
+        instance.colliderRadius = job.colliderRadius;
     }
 
     Node[] retNodes = new Node[8];
@@ -329,11 +333,34 @@ public class PathFinder {
 
 
         float netCostSum = 0;
+        Node prevNode = null;
         while (currentNode != startNode)
         {
 
             netCostSum += currentNode.NetCost;
-            path.Add(currentNode);
+            if (path.Count <= 1) //if path has only 1 node or less
+            {
+                path.Add(currentNode); //add the node
+                prevNode = currentNode;
+            }
+            else //else check if the intermediate node can be skipped by doing a raycast
+            {
+                Vector3 rayDir = (currentNode.position - prevNode.position).normalized;
+                RaycastHit hit;
+                float dist = (currentNode.position - prevNode.position).magnitude;
+                if(!Physics.SphereCast(prevNode.position, colliderRadius, rayDir, out hit, dist)) //nothing in between the first and the last node
+                {                                                                            //so can skip the intermediate node
+
+                    path.RemoveAt(path.Count - 1); //remove the last node
+                    path.Add(currentNode); //add this node;
+                }
+                else //something's in between. Can't skip the node
+                {
+                    prevNode = path[path.Count - 1]; //set the previous node to the last node
+                    path.Add(currentNode); // add the new node
+
+                }
+            }
             currentNode = currentNode.prevNode;
         }
         //    Debug.Log(netCostSum);
