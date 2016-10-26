@@ -25,10 +25,12 @@ public class GameScript : MonoBehaviour {
 
     Vector3 target;
     bool calcTurn = true;
+    PathFindJob job = null;
     // Update is called once per frame
     void Update () {
         
         float turnAmount = 0;
+        
         if (Input.GetMouseButtonDown(0))
         {
 
@@ -38,7 +40,9 @@ public class GameScript : MonoBehaviour {
             RaycastHit hit;
             Physics.Raycast(targetRay, out hit);
             path.Clear();
-            PathManager.AddForPathFinding(grid, characterTransform.position, hit.point, path, true, colliderRadius);
+            job = new PathFindJob(grid, characterTransform.position
+                , hit.point, path,false, colliderRadius);
+            PathManager.AddForPathFinding(job);
             PathManager.StartPathFinding();
             //characterTransform.position += path[path.Count - 1].position.normalized;
             
@@ -50,7 +54,7 @@ public class GameScript : MonoBehaviour {
             //  MovementHandler.HandleMovement(characterTransform
             //     , PathFinder.instance.endNode.position, characterAnimator);
 
-            characterMovementHandler.RunThroughPath(path, colliderRadius);
+            characterMovementHandler.RunThroughPath(path, colliderRadius, job);
            
             /*characterAnimator.SetFloat("ForwardSpeed", moveAmount, .1f, Time.deltaTime);
             characterAnimator.SetFloat("Turn"//, 0, .1f, Time.deltaTime)

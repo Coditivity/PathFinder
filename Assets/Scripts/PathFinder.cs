@@ -35,21 +35,22 @@ public class PathFinder {
     }
 
     private float colliderRadius = -1;
-    
-    public static void SetAndStart(Grid grid, Vector3 start, Vector3 target, List<Node> outPath, float colliderRadius)
-    {
 
-        instance.grid = grid;
-        instance.startNode = instance.GetNodeFromWorldPostion(start);
-        instance.endNode = instance.GetNodeFromWorldPostion(target);
-        instance.path = outPath;
-        instance.grid.ClosedNodes.Add(instance.startNode);
-        instance.bestNodeAvailableTillNow = null;
-        instance.FindPath(instance.startNode);
-        instance.colliderRadius = colliderRadius;
+    /* public static void SetAndStart(Grid grid, Vector3 start, Vector3 target, List<Node> outPath, float colliderRadius)
+     {
 
-    }
+         instance.grid = grid;
+         instance.startNode = instance.GetNodeFromWorldPostion(start);
+         instance.endNode = instance.GetNodeFromWorldPostion(target);
+         instance.path = outPath;
+         instance.grid.ClosedNodes.Add(instance.startNode);
+         instance.bestNodeAvailableTillNow = null;
+         instance.FindPath(instance.startNode);
+         instance.colliderRadius = colliderRadius;
 
+     }*/
+
+    PathFindJob job;
     public static void SetAndStart(PathFindJob job)
     {
         instance.grid = job.grid;
@@ -58,8 +59,11 @@ public class PathFinder {
         instance.path = job.intoPath;
         instance.grid.ClosedNodes.Add(instance.startNode);
         instance.bestNodeAvailableTillNow = null;
-        instance.FindPath(instance.startNode);
         instance.colliderRadius = job.colliderRadius;
+        instance.job = job;
+
+
+        instance.FindPath(instance.startNode);
     }
 
     Node[] retNodes = new Node[8];
@@ -143,58 +147,32 @@ public class PathFinder {
     
     bool FindPath(Node n)
     {
+        
         if (n == endNode)
         {
+        
             TracePath(endNode);
+            job.SetNodesAndStatus(endNode, endNode, true);
             return true;
             
         }
-        
-        if (!endNode.isWalkable)
-        {
-            return false;
-        }
-
-
 
         bool found = CalculateCost(n);
         if (!found)
         {
             return true;
         }
-        /*   float lowestNetCost = float.MaxValue;
-           float lowestHCost = float.MaxValue;
-           Node bestNode = null;
-           foreach (Node node in openNodes)
-           {
-
-               if (node.NetCost < lowestNetCost)
-               {
-                   lowestNetCost = node.NetCost;
-                   lowestHCost = node.hCost;
-                   bestNode = node;
-               }
-               else if (node.NetCost == lowestNetCost)
-               {
-                   if (node.hCost < lowestHCost)
-                   {
-                       bestNode = node;
-                       lowestHCost = node.hCost;
-                   }
-               }
-           }
-
-        
-
-           openNodes.Remove(bestNode);
-           closedNodes.Add(bestNode);*/
         if (grid.OpenNodes.Count <= 0) //target node unreachable
         {
-            // Debug.LogError("cost min>>" + grid.ClosedNodes.elements[grid.ClosedNodes.Count / 2].NetCost);
-            // Debug.LogError("cost >>" + grid.ClosedNodes.elements[grid.ClosedNodes.Count/2 + 1].NetCost);
-          //  Debug.LogError("finding for best yet " + bestNodeAvailableTillNow.hCost);
-            TracePath(bestNodeAvailableTillNow);
            
+            TracePath(bestNodeAvailableTillNow);
+            job.SetNodesAndStatus(endNode, bestNodeAvailableTillNow, false);
+            return false;
+        }
+        if (!endNode.isWalkable)
+        {
+            TracePath(bestNodeAvailableTillNow);
+            job.SetNodesAndStatus(endNode, bestNodeAvailableTillNow, false);
             return false;
         }
         Node node = grid.OpenNodes.Remove();        
