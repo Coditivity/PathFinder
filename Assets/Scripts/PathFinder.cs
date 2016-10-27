@@ -169,12 +169,12 @@ public class PathFinder {
             job.SetNodesAndStatus(endNode, bestNodeAvailableTillNow, false);
             return false;
         }
-        if (!endNode.isWalkable)
+       /* if (!endNode.isWalkable)
         {
             TracePath(bestNodeAvailableTillNow);
             job.SetNodesAndStatus(endNode, bestNodeAvailableTillNow, false);
             return false;
-        }
+        }*/
         Node node = grid.OpenNodes.Remove();        
         grid.ClosedNodes.Add(node);
         FindPath(node);

@@ -144,8 +144,7 @@ public class MovementHandler : MonoBehaviour
             else
             {
                 if (nextNodeReached)
-                {
-                   
+                {                   
                     path.RemoveAt(path.Count - 1);
                 }
             }
