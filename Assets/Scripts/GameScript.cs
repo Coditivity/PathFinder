@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+
+
 
 public class GameScript : MonoBehaviour {
 
@@ -60,8 +61,22 @@ public class GameScript : MonoBehaviour {
             characterAnimator.SetFloat("Turn"//, 0, .1f, Time.deltaTime)
                 , turnAmount);//, .1f, Time.deltaTime);*/
         }
-	}
+          
+    
+}
 
-   
+    void OnGUI()
+    {
+        UnityEditor.Handles.color = Color.black;
+        for (int i = 0; i < grid.NumNodesX; i++)
+        {
+            for (int j = 0; j < grid.NumNodesY; j++)
+            {
+                
+                Vector3 position = new Vector3(-3, 1, 1);
+                UnityEditor.Handles.Label(grid.Nodes[i, j].position, ((int)(grid.Nodes[i, j].hCost/1f)).ToString());
+            }
+        }
+    }
         
 }

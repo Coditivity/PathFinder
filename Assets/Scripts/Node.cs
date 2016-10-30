@@ -15,7 +15,7 @@ public class Node:IHeap<Node> {
     {
         get
         {
-            return gCost + hCost + weight;
+            return gCost + hCost;// + weight;
         }
     }
     public int rowIndex { get; private set; }

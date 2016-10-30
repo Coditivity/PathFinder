@@ -77,11 +77,9 @@ public class MovementHandler : MonoBehaviour
                 Vector3 crossVec = Vector3.Cross(transform.forward, turnDir2);
                 int sign = crossVec.y < 0 ? -1 : 1;
                 animator.SetFloat("Turn", 1f * sign, .1f, Time.deltaTime);
-                Debug.LogError("turnign>>" + Vector3.Dot(transform.forward, turnDir2));
                 if (Vector3.Dot(transform.forward, turnDir2) > .95f)
                 {
                     animator.SetFloat("Turn", 0, 0f, Time.deltaTime);
-                    Debug.LogError("returning");
                         
                     return true;
                 }
@@ -159,7 +157,6 @@ public class MovementHandler : MonoBehaviour
                 Vector3 groundPos = Vector3.ProjectOnPlane(transform.position, Vector3.up);
                 if ((groundPos - path[path.Count - 1].position).magnitude == 0.0000f)
                 {
-                    Debug.LogError("removing at");
                     path.RemoveAt(path.Count - 1);
                 }
             }
@@ -175,10 +172,7 @@ public class MovementHandler : MonoBehaviour
             
 
         }
-       if(path.Count == 0 )
-        {
-            Debug.LogError("path zero");
-        }
+       
 
     }
 
