@@ -20,6 +20,7 @@ public class GameScript : MonoBehaviour {
 
         path = new List<Node>();
         grid = new Grid(Vector2.zero, 20, 20, .75f, unwalkableLayerMask, true, nodePrefab);
+       
         // Debug.Log("start " + MyGameScripts.NormalizeAngleRad(-13.043828f));
         Debug.Log("dfdf" + null + ">>>>");
 	}
@@ -41,9 +42,12 @@ public class GameScript : MonoBehaviour {
             RaycastHit hit;
             Physics.Raycast(targetRay, out hit);
             path.Clear();
+            
             job = new PathFindJob(grid, characterTransform.position
                 , hit.point, path,false, colliderRadius);
+           
             PathManager.AddForPathFinding(job);
+           
             PathManager.StartPathFinding();
             //characterTransform.position += path[path.Count - 1].position.normalized;
             
@@ -65,18 +69,20 @@ public class GameScript : MonoBehaviour {
     
 }
 
+#if UNITY_EDITOR
     void OnGUI()
     {
-        UnityEditor.Handles.color = Color.black;
+      /*  UnityEditor.Handles.color = Color.black;
         for (int i = 0; i < grid.NumNodesX; i++)
         {
             for (int j = 0; j < grid.NumNodesY; j++)
             {
                 
                 Vector3 position = new Vector3(-3, 1, 1);
-                UnityEditor.Handles.Label(grid.Nodes[i, j].position, ((int)(grid.Nodes[i, j].hCost/1f)).ToString());
+                UnityEditor.Handles.Label(grid.Nodes[i, j].position, ((int)(grid.Nodes[i, j].gCost/1f)).ToString());
             }
-        }
+        }*/
     }
-        
+#endif
+
 }

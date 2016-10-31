@@ -143,6 +143,88 @@ public class PathFinder {
         }
     }
 
+    private Node GetBestNodeForUnreachableTarget(Node targetNode)
+    {
+        int rowOffset = 0;
+        int colOffset = 0;
+        bool reachableNodeHit = false;
+        Node lowestHCostNode = null;
+
+        //Debug.LogError("targetNode>>" + targetNode.rowIndex + ", " + targetNode.colIndex);
+
+        for (int k = 0; k < 1000; k++) {
+            for (int i = targetNode.rowIndex - rowOffset; i <= targetNode.rowIndex + rowOffset; i++)
+            {
+                for (int j = targetNode.colIndex - colOffset; j <= targetNode.colIndex + colOffset; j++)
+                {
+                   // Debug.LogError("trying>>" + i + ", " + j);
+                    if (i < 0 || j < 0 || i >= grid.NumNodesX || j >= grid.NumNodesY)
+                    {
+                        continue;
+                    }
+                    Node n = grid.Nodes[i, j];
+
+                    if (n != targetNode
+                        && !(Mathf.Abs(i - targetNode.rowIndex) < rowOffset && Mathf.Abs(j - targetNode.colIndex) < colOffset)) //prevent checking the already checked internal nodes when the offset in incremented
+                    {
+                        //Debug.LogError("checking>>" + i + ", " + j);
+                        int xDistance = Mathf.Abs(n.rowIndex - targetNode.rowIndex);
+                        int yDistance = Mathf.Abs(n.colIndex - targetNode.colIndex);
+
+                        if (xDistance < yDistance)
+                        {
+                            n.hCost = xDistance * Node.DIAGONAL_COST + (yDistance - xDistance) * Node.ORTHOGONAL_COST;
+                        }
+                        else
+                        {
+                            n.hCost = yDistance * Node.DIAGONAL_COST + (xDistance - yDistance) * Node.ORTHOGONAL_COST;
+                        }
+
+
+                        if (n.gCost!=-0.5f) //an obstacle does not sit on top of this node or is not sorrounded by obstacles. (When an unreachable node is clicked all reachable nodes will have non default (-.5) gcost )
+                        {
+                            reachableNodeHit = true;
+                            if (lowestHCostNode == null)
+                            {
+                                lowestHCostNode = n;
+                            }
+                            else if (n.hCost <= lowestHCostNode.hCost)
+                            {
+                                if (n.hCost == lowestHCostNode.hCost)
+                                {
+                                    if (lowestHCostNode.NetCost < n.NetCost)
+                                    {
+                                        lowestHCostNode = n;
+                                    }
+                                }
+                                else
+                                {
+                                    lowestHCostNode = n;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (reachableNodeHit && i == targetNode.rowIndex + rowOffset) //outer nodes in a square have been checked and a reachable node has been found.
+                                                                              //The best possible node is in lowestHCostNode. Time to return it
+                {
+                    if (lowestHCostNode == null)
+                    {
+                     //   Debug.LogError("returning null");
+                    }
+                    else
+                    {
+                       // Debug.LogError("not returning nulll");
+                    }
+                    return lowestHCostNode;
+                }
+                
+            }
+            rowOffset++;
+            colOffset++;
+        }
+        return null;
+    }
     
     
     bool FindPath(Node n)
@@ -164,7 +246,19 @@ public class PathFinder {
         }
         if (grid.OpenNodes.Count <= 0) //target node unreachable
         {
-           
+
+            bestNodeAvailableTillNow = GetBestNodeForUnreachableTarget(endNode);
+            if(bestNodeAvailableTillNow == null)
+            {
+                Debug.LogError("null node");
+            }
+            else
+            {
+                
+              //  Debug.LogError("walkability>>" + bestNodeAvailableTillNow.gCost +bestNodeAvailableTillNow.isWalkable 
+               //     + " " + bestNodeAvailableTillNow.rowIndex + ", " + bestNodeAvailableTillNow.colIndex);
+            }
+            
             TracePath(bestNodeAvailableTillNow);
             job.SetNodesAndStatus(endNode, bestNodeAvailableTillNow, false);
             return false;

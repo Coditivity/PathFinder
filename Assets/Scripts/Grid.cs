@@ -40,6 +40,7 @@ public class Grid
         NumNodesX = Mathf.RoundToInt(gridSizeX / NodeDiameter);
         NumNodesY = Mathf.RoundToInt(gridSizeY / NodeDiameter);
         Nodes = new Node[NumNodesX, NumNodesY];
+        
         OpenNodes = new Heap<Node>(NumNodesX * NumNodesY);
         ClosedNodes = new Heap<Node>(NumNodesX * NumNodesY);
 
@@ -74,7 +75,11 @@ public class Grid
                 tNodePos = centerPosition - Vector3.forward * gridSizeY / 2 + nodeSizeZ / 2f + j * nodeSizeZ
                     - Vector3.right * gridSizeX / 2 + i * nodeSizeX + nodeSizeX / 2;
                 Nodes[i, j] = new Node(tNodePos, i, j);
-                                
+               
+                
+
+                    
+
 
                 if (Physics.CheckSphere(Nodes[i, j].position, NodeDiameter / 2f, unwalkableObjectLayer))
 
@@ -99,6 +104,8 @@ public class Grid
                     nodeObjects[index - 1].transform.localScale *= scaleFactor;
                     nodeObjects[index - 1].transform.parent = nodeObjectParent.transform;
                 }
+                //Nodes[i, j].gCost = -1f;
+                //Nodes[i, j].hCost = -1f;
 
             }
         }

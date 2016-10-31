@@ -30,8 +30,8 @@ public class Node:IHeap<Node> {
     public Node(Vector3 position, int rowIndex, int colIndex)
     {
         prevNode = null;
-        hCost = 0;
-        gCost = 0;
+        hCost = -.5f;
+        gCost = -.5f;
         weight = 0;
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;

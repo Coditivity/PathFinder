@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class PathManager:MonoBehaviour {
-
+    
     public Grid.Layer_WeightPair[] layerWeights;
     Queue jobQueue;
     bool isFindingPath;
